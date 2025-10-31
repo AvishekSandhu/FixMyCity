@@ -1,26 +1,17 @@
-
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
+import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
-import Navbar from './pages/Navbar.jsx';
+import Navbar from './pages/Navbar.jsx'
 
-
-function Allroutes() {
+function App() {
   return (
     <>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
     </>
-  );
+  )
 }
 
-function App() {
-  return (
-    <Router>
-      <Navbar />
-      <Allroutes />
-    </Router>
-  );
-}
 export default App
