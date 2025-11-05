@@ -3,13 +3,15 @@ import React from 'react'
 const Navbar = () => {
   return (
     <>
-    <div>this is a nabar </div>
-   {/* <ul>
-    <li>Home</li>
-   <li>Services</li>
-   <li>Contact us</li>
-   <li>Login</li>
-   </ul> */}
+    <div className="main flex items-center justify-between">
+    <img className="w-50 rounded-xl -ml-20" src="logo_final.png" alt="logo" />
+   <ul className=" flex items-center gap-6 -mr-20  font-semibold text-lg">
+  <li className="hover:text-blue-500 cursor-pointer">Home</li>
+  <li className="hover:text-blue-500 cursor-pointer">Services</li>
+  <li className="hover:text-blue-500 cursor-pointer">Contact us</li>
+  <li className="hover:text-blue-500 cursor-pointer">Login</li>
+</ul>
+</div>
    </>
 
   )
