@@ -1,23 +1,129 @@
-import React from 'react'
-
+import React from "react";
+import {
+  FaInstagram,
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 const Home = () => {
   return (
-   <>
+    <>
+      <div className="flex items-center justify-center h-screen ">
+        <h1 className="text-5xl font-bold text-blue-600 relative bottom-[14rem] right-[-14rem]">
+          Welcome to FixMyCity
+        </h1>
 
-<div className="flex items-center justify-center h-screen relative">
-  <h1 class="text-5xl font-bold text-blue-600 relative bottom-[14rem] right-[-14rem]">Welcome to FixMyCity</h1>
-  
-  <div className="relative bottom-[8rem] left-[-15rem]">
-    <h3 className='text-xl mb-5'>Report an Issue</h3>
-    <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">CITIZEN</button>
-    <button  className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">DEPARTMENTAL</button>
-    <button  className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">ADMIN</button>
-  </div>
-</div>
+        <div className="relative bottom-[8rem] left-[-15rem]">
+          <h3 className="text-xl mb-5">Report an Issue</h3>
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
+            CITIZEN
+          </button>
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
+            DEPARTMENTAL
+          </button>
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
+            ADMIN
+          </button>
+        </div>
+      </div>
+
+      <footer className="w-full bg-gray-900 text-gray-300 py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Top Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+            {/* Contact Section */}
+            <div>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                Contact Us
+              </h2>
+              <p className="text-lg">
+                Email:
+                <span className="text-blue-400 font-medium ml-1">
+                  fixmycity@gmail.com
+                </span>
+              </p>
+
+              <p className="text-gray-400 mt-4 leading-relaxed">
+                A platform where citizens can report issues, track progress, and
+                help improve their city's infrastructure & environment.
+              </p>
+
+              {/* Legal Links */}
+              <div className="mt-6 space-y-2">
+                <a href="#" className="text-sm hover:text-blue-400 transition">
+                  Terms of Use
+                </a>
+                <br />
+                <a href="#" className="text-sm hover:text-blue-400 transition">
+                  Privacy Policy
+                </a>
+              </div>
+            </div>
+
+            {/* Partners Section */}
+            <div className="flex flex-col items-center">
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                Our Partners
+              </h2>
+
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_of_India_logo.svg/1920px-Government_of_India_logo.svg.png"
+                alt="Government of India"
+                className="h-15 w-auto filter brightness-0 invert"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
+                alt="Digital india"
+                className="h-18"
+              />
+              <img
+                src="imgop.png"
+                alt="Digital india"
+                className="h-10"
+              />
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex flex-col items-center md:items-start">
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                Follow Us
+              </h2>
+
+              <div className="flex gap-5">
+                {/* Instagram */}
+                <a href="#" className="hover:text-pink-400 transition">
+                  <FaInstagram size={32} />
+                </a>
+
+                {/* Facebook */}
+                <a href="#" className="hover:text-blue-500 transition">
+                  <FaFacebookF size={32} />
+                </a>
+
+                {/* Twitter */}
+                <a href="#" className="hover:text-gray-400 transition">
+                  <FaTwitter size={32} />
+                </a>
+
+                {/* LinkedIn */}
+                <a href="#" className="hover:text-blue-300 transition">
+                  <FaLinkedinIn size={32} />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="border-t border-gray-700 mt-10 pt-4 text-center">
+            <p className="text-sm text-gray-500">
+              © 2025 FixMyCity • All Rights Reserved
+            </p>
+          </div>
+        </div>
+      </footer>
     </>
+  );
+};
 
-  )
-}
-
-export default Home
+export default Home;

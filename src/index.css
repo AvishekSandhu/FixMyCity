@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+
 @layer base {
   body {
     background-color: theme("colors.blue.200");
-    min-height: 100vh;
+  height: 100%;
+width: 100%;
   }
 }
