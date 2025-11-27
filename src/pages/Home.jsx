@@ -9,24 +9,36 @@ import {
 const Home = () => {
   return (
     <>
-      <div className="flex items-center justify-center h-screen ">
-        <h1 className="text-5xl font-bold text-blue-600 relative bottom-[14rem] right-[-14rem]">
+      <div className="flex flex-col items-center justify-center h-screen px-6 text-center">
+
+        {/* Heading */}
+        <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-10 lg:mt-[-15rem]">
           Welcome to FixMyCity
         </h1>
 
-        <div className="relative bottom-[8rem] left-[-15rem]">
-          <h3 className="text-xl mb-5">Report an Issue</h3>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
-            CITIZEN
-          </button>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
-            DEPARTMENTAL
-          </button>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 mr-4">
-            ADMIN
-          </button>
+        {/* Buttons Section */}
+        <div>
+          <h3 className="text-lg sm:text-xl mb-5 font-semibold">
+            Report an Issue
+          </h3>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300">
+              CITIZEN
+            </button>
+
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300">
+              DEPARTMENTAL
+            </button>
+
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300">
+              ADMIN
+            </button>
+          </div>
         </div>
+
       </div>
+      {/* footer section */}
 
       <footer className="w-full bg-gray-900 text-gray-300 py-12">
         <div className="max-w-6xl mx-auto px-6">
