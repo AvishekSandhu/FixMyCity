@@ -10,9 +10,8 @@ const Home = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center h-screen px-6 text-center">
-
         {/* Heading */}
-        <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-10 lg:mt-[-15rem]">
+        <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-10 lg:mt-[-10rem]">
           Welcome to FixMyCity
         </h1>
 
@@ -36,8 +35,51 @@ const Home = () => {
             </button>
           </div>
         </div>
-
       </div>
+
+     {/* STATISTICS Section */}
+<div className="mx-auto mt-[-20rem] w-full py-16">
+  <h1 className="text-3xl font-semibold text-center mb-10">
+    STATISTICS
+  </h1>
+
+  <div className="max-w-5xl mx-auto bg-[#B8D0EC] border border-blue-300 rounded-2xl p-8 shadow">
+    
+    {/* Labels */}
+    <div className="flex justify-between text-gray-800 font-semibold mb-6">
+      <p className="text-xl">Pending Complaints</p>
+      <p className="text-xl">Resolved Complaints</p>
+      <p className="text-xl">Total Complaints</p>
+    </div>
+
+    {/* Numbers */}
+    <div className="flex justify-between text-gray-700 text-lg font-medium mb-10">
+      <p>01</p>
+      <p>02</p>
+      <p>03</p>
+    </div>
+
+    {/* Card 1 */}
+    <div className="bg-[#192338] p-4 rounded-xl shadow flex justify-between">
+      <div>
+        <span className="bg-yellow-400 text-black -ml-30 text-xs px-2 py-1 rounded-lg font-medium">
+          In Progress
+        </span>
+
+        <span className="ml-2 text-sm text-gray-400">Sanitation</span>
+
+        <h3 className="text-white font-semibold text-md mt-2">
+          Overflowing garbage near central market
+        </h3>
+        <p className="text-gray-400  -ml-50 text-sm">Ward 5</p>
+      </div>
+
+      <p className="text-sm text-gray-400">2 hrs</p>
+    </div>
+
+  </div>
+</div>
+
       {/* footer section */}
 
       <footer className="w-full bg-gray-900 text-gray-300 py-12">
@@ -89,11 +131,7 @@ const Home = () => {
                 alt="Digital india"
                 className="h-18"
               />
-              <img
-                src="imgop.png"
-                alt="Digital india"
-                className="h-10"
-              />
+              <img src="imgop.png" alt="Digital india" className="h-10" />
             </div>
 
             {/* Social Icons */}
