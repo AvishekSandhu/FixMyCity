@@ -13,6 +13,8 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { user } = useUser();
   const role = user?.publicMetadata?.role || "citizen"; // default role
+  const roleLabel =
+    role === "admin" ? "Admin" : role === "officer" ? "Officer" : "Citizen";
 
   const closeMenu = () => setOpen(false);
 
@@ -46,7 +48,19 @@ const Navbar = () => {
             </li>
           )}
 
-          {/* When logged OUT: Login + Sign up */}
+          {/* Officer dashboard link when role === "officer" */}
+          {role === "officer" && (
+            <li>
+              <Link
+                to="/officer"
+                className="hover:text-blue-500 cursor-pointer"
+              >
+                Officer
+              </Link>
+            </li>
+          )}
+
+          {/* When logged OUT: Login */}
           <SignedOut>
             <li>
               <SignInButton mode="modal">
@@ -55,11 +69,11 @@ const Navbar = () => {
                 </button>
               </SignInButton>
             </li>
-           
           </SignedOut>
 
-          {/* When logged IN: user avatar / menu */}
+          {/* When logged IN: role label + user avatar */}
           <SignedIn>
+            <li className="text-sm text-gray-600">Role: {roleLabel}</li>
             <li>
               <UserButton afterSignOutUrl="/" />
             </li>
@@ -110,6 +124,19 @@ const Navbar = () => {
             </li>
           )}
 
+          {/* Officer link for mobile */}
+          {role === "officer" && (
+            <li>
+              <Link
+                to="/officer"
+                className="hover:text-blue-500 cursor-pointer"
+                onClick={closeMenu}
+              >
+                Officer
+              </Link>
+            </li>
+          )}
+
           <SignedOut>
             <li>
               <SignInButton mode="modal">
@@ -133,6 +160,7 @@ const Navbar = () => {
           </SignedOut>
 
           <SignedIn>
+            <li className="text-sm text-gray-600">Role: {roleLabel}</li>
             <li>
               <UserButton afterSignOutUrl="/" />
             </li>
