@@ -18,10 +18,7 @@ dist-ssr
 .env.development.local
 .env.production.local
 
-# Frontend envs (Vite/React)
-frontend/.env
-frontend/.env.local
-frontend/.env.*.local
+
 
 # Backend envs
 backend/.env
