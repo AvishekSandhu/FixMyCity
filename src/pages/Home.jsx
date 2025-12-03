@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../api"; // ✅ shared backend base URL
 
 const slides = [
   { src: "/img1.jpg", alt: "Slide 1" },
@@ -18,7 +19,6 @@ const slides = [
 ];
 
 const SLIDE_INTERVAL = 5000; // 5 seconds
-const API_BASE = "http://localhost:3001";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,7 +52,7 @@ const Home = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/summary`);
+        const res = await fetch(`${API_URL}/api/summary`);
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.error || "Failed to load statistics");
