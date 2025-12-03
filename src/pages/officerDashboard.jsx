@@ -3,8 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
 import Spinner from "./loding.jsx";
-
-const API_BASE = "http://localhost:3001";
+import { API_URL } from "../api"; // ✅ use shared base URL
 
 const OfficerDashboard = () => {
   const { isLoaded, isSignedIn, getToken } = useAuth();
@@ -28,7 +27,7 @@ const OfficerDashboard = () => {
       try {
         const token = await getToken();
         const res = await fetch(
-          `${API_BASE}/api/officer/complaints?status=all`,
+          `${API_URL}/api/officer/complaints?status=all`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -65,17 +64,14 @@ const OfficerDashboard = () => {
   const updateStatus = async (id, status) => {
     try {
       const token = await getToken();
-      const res = await fetch(
-        `${API_BASE}/api/complaints/${id}/status`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status, assignToSelf: true }),
-        }
-      );
+      const res = await fetch(`${API_URL}/api/complaints/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status, assignToSelf: true }),
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to update status");
@@ -108,7 +104,7 @@ const OfficerDashboard = () => {
     try {
       const token = await getToken();
       const res = await fetch(
-        `${API_BASE}/api/complaints/${complaintId}/replies`,
+        `${API_URL}/api/complaints/${complaintId}/replies`,
         {
           method: "POST",
           headers: {
@@ -226,9 +222,7 @@ const OfficerDashboard = () => {
                     <select
                       className="border rounded px-1 py-0.5 text-xs w-full mb-1"
                       value={c.status}
-                      onChange={(e) =>
-                        updateStatus(c._id, e.target.value)
-                      }
+                      onChange={(e) => updateStatus(c._id, e.target.value)}
                     >
                       <option value="pending">Pending</option>
                       <option value="in_progress">In Progress</option>
@@ -294,8 +288,7 @@ const OfficerDashboard = () => {
           </p>
           <p className="text-sm text-gray-700 mb-1">
             <span className="font-medium">Handling Officer:</span>{" "}
-            {selectedComplaint.assignedOfficerName ||
-              "-"}{" "}
+            {selectedComplaint.assignedOfficerName || "-"}{" "}
             {selectedComplaint.assignedOfficerEmail
               ? `(${selectedComplaint.assignedOfficerEmail})`
               : ""}
@@ -319,7 +312,7 @@ const OfficerDashboard = () => {
                 {selectedComplaint.imageUrls.map((url, i) => (
                   <img
                     key={i}
-                    src={`${API_BASE}${url}`}
+                    src={`${API_URL}${url}`} // ✅ updated
                     alt={`complaint-${i}`}
                     className="w-24 h-24 object-cover rounded-md border"
                   />
@@ -332,9 +325,7 @@ const OfficerDashboard = () => {
             <h3 className="text-md font-semibold mb-2">Conversation</h3>
             {(!selectedComplaint.replies ||
               selectedComplaint.replies.length === 0) && (
-              <p className="text-sm text-gray-500">
-                No replies yet.
-              </p>
+              <p className="text-sm text-gray-500">No replies yet.</p>
             )}
             {selectedComplaint.replies &&
               selectedComplaint.replies.length > 0 && (
