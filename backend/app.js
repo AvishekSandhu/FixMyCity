@@ -8,11 +8,10 @@ import { errorHandler } from './middleware/error.js';
 
 const app = express();
 
-// Allow both local dev and the deployed frontend
 const allowedOrigins = [
-  'http://localhost:5173',        // Vite dev
-  process.env.FRONTEND_URL,       // Render frontend URL
-].filter(Boolean);                // remove undefined
+  'http://localhost:5173',                   // Vite dev
+  'https://fixmycity-1-5wbk.onrender.com',  // Render frontend
+];
 
 app.use(
   cors({
@@ -29,10 +28,10 @@ app.use('/uploads', express.static(uploadDir));
 // Clerk middleware → sets req.auth
 app.use(ClerkExpressWithAuth());
 
-// mount all API routes under /api
+// all API routes under /api
 app.use('/api', routes);
 
-// global error handler (last)
+// global error handler
 app.use(errorHandler);
 
 export default app;
