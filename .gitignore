@@ -13,16 +13,10 @@ dist-ssr
 *.local
 
 # Env files – do NOT commit
-.env
-.env.local
-.env.development.local
-.env.production.local
+*.env
 
 
 
-# Backend envs
-backend/.env
-backend/.env.local
 
 # Editor directories and files
 .vscode/*
