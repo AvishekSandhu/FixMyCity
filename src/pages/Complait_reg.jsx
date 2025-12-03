@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
+import { API_URL } from "../api"; // adjust path if file is elsewhere
 
 const MAX_IMAGE_SIZE_MB = 5; // max size per image
 const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
@@ -72,7 +73,6 @@ const ComplaintForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Get Clerk session token for backend
       const token = await getToken();
 
       if (!token) {
@@ -85,13 +85,13 @@ const ComplaintForm = () => {
       });
       images.forEach((file) => data.append("images", file));
 
-      const res = await fetch("http://localhost:3001/api/complaints", {
+      // ✅ use shared API_URL
+      const res = await fetch(`${API_URL}/api/complaints`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`, // important
+          Authorization: `Bearer ${token}`,
         },
         body: data,
-        // credentials: "include", // optional now; token is enough
       });
 
       if (!res.ok) {
@@ -105,7 +105,7 @@ const ComplaintForm = () => {
 
       setForm(initialForm);
       setImages([]);
-      e.target.reset(); // clear file input
+      e.target.reset();
     } catch (err) {
       toast.error(err.message || "Something went wrong", {
         position: "top-right",
