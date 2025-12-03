@@ -1,17 +1,22 @@
-// backend/src/app.js
+// backend/app.js
 import express from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
 import { ClerkExpressWithAuth } from './config/clerk.js';
 import { uploadDir } from './config/multer.config.js';
 import { errorHandler } from './middleware/error.js';
-// console.log('Serving uploads from:', uploadDir);    
 
 const app = express();
 
+// Allow both local dev and the deployed frontend
+const allowedOrigins = [
+  'http://localhost:5173',        // Vite dev
+  process.env.FRONTEND_URL,       // Render frontend URL
+].filter(Boolean);                // remove undefined
+
 app.use(
   cors({
-    origin: 'http://localhost:5173', // React dev URL
+    origin: allowedOrigins,
     credentials: true,
   })
 );
