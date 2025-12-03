@@ -3,8 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import Spinner from "./loding.jsx";
 import { toast } from "react-toastify";
-
-const API_BASE = "http://localhost:3001";
+import { API_URL } from "../api"; // ✅ shared base URL
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -37,13 +36,9 @@ const AdminDashboard = () => {
         };
 
         const [usersRes, summaryRes, complaintsRes] = await Promise.all([
-          fetch(`${API_BASE}/api/admin/users`, { headers }),
-          fetch(`${API_BASE}/api/admin/dashboard-summary`, {
-            headers,
-          }),
-          fetch(`${API_BASE}/api/admin/complaints?status=all`, {
-            headers,
-          }),
+          fetch(`${API_URL}/api/admin/users`, { headers }),
+          fetch(`${API_URL}/api/admin/dashboard-summary`, { headers }),
+          fetch(`${API_URL}/api/admin/complaints?status=all`, { headers }),
         ]);
 
         if (!usersRes.ok || !summaryRes.ok || !complaintsRes.ok) {
@@ -95,7 +90,7 @@ const AdminDashboard = () => {
   const updateStatus = async (id, status) => {
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE}/api/complaints/${id}/status`, {
+      const res = await fetch(`${API_URL}/api/complaints/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +115,7 @@ const AdminDashboard = () => {
   const changeUserRole = async (userId, newRole) => {
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE}/api/admin/users/${userId}/role`, {
+      const res = await fetch(`${API_URL}/api/admin/users/${userId}/role`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +141,7 @@ const AdminDashboard = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
+      const res = await fetch(`${API_URL}/api/admin/users/${userId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -167,7 +162,7 @@ const AdminDashboard = () => {
     try {
       const token = await getToken();
       const res = await fetch(
-        `${API_BASE}/api/admin/complaints/${complaintId}/assign-officer`,
+        `${API_URL}/api/admin/complaints/${complaintId}/assign-officer`,
         {
           method: "PATCH",
           headers: {
@@ -194,7 +189,7 @@ const AdminDashboard = () => {
   const updateComplaintDepartment = async (complaintId, department) => {
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE}/api/admin/complaints/${complaintId}`, {
+      const res = await fetch(`${API_URL}/api/admin/complaints/${complaintId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -223,7 +218,7 @@ const AdminDashboard = () => {
     try {
       const token = await getToken();
       const res = await fetch(
-        `${API_BASE}/api/admin/complaints/${complaintId}`,
+        `${API_URL}/api/admin/complaints/${complaintId}`,
         {
           method: "DELETE",
           headers: {
@@ -405,7 +400,7 @@ const AdminDashboard = () => {
                         {c.imageUrls.map((url, i) => (
                           <img
                             key={i}
-                            src={`${API_BASE}${url}`}
+                            src={`${API_URL}${url}`} // ✅ use API_URL here
                             alt={`complaint-${i}`}
                             className="w-10 h-10 object-cover rounded border"
                           />
@@ -477,13 +472,11 @@ const AdminDashboard = () => {
             {filteredUsers.map((u) => (
               <tr key={u.id}>
                 <td className="border px-2 py-1">{u.id}</td>
-                {/* NEW: show username/fullName/email */}
                 <td className="border px-2 py-1">
                   {u.username || u.fullName || u.email || "-"}
                 </td>
                 <td className="border px-2 py-1">{u.email || "-"}</td>
                 <td className="border px-2 py-1">{u.role}</td>
-                {/* Change role */}
                 <td className="border px-2 py-1">
                   <select
                     className="border rounded px-1 py-0.5 text-xs"
@@ -495,7 +488,6 @@ const AdminDashboard = () => {
                     <option value="admin">Admin</option>
                   </select>
                 </td>
-                {/* Delete user */}
                 <td className="border px-2 py-1">
                   <button
                     onClick={() => deleteUser(u.id)}
