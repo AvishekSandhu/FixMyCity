@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
-import { API_URL } from "../api"; // ✅ shared backend base URL
+import { API_URL } from "../api.js"; // ✅ shared backend base URL
 
 const slides = [
   { src: "/img1.jpg", alt: "Slide 1" },
