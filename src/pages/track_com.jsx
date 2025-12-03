@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
 import Spinner from "./loding.jsx";
-
-const API_BASE = "http://localhost:3001";
+import { API_URL } from "../api"; // ✅ shared base URL
 
 const Track = () => {
   const { isLoaded, isSignedIn, getToken } = useAuth();
@@ -27,7 +26,7 @@ const Track = () => {
     const fetchComplaints = async () => {
       try {
         const token = await getToken();
-        const res = await fetch(`${API_BASE}/api/complaints/my`, {
+        const res = await fetch(`${API_URL}/api/complaints/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -66,7 +65,7 @@ const Track = () => {
     try {
       const token = await getToken();
       const res = await fetch(
-        `${API_BASE}/api/complaints/${complaintId}/replies`,
+        `${API_URL}/api/complaints/${complaintId}/replies`,
         {
           method: "POST",
           headers: {
@@ -102,7 +101,7 @@ const Track = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Spinner />
+        < Spinner />
       </div>
     );
   }
@@ -187,7 +186,7 @@ const Track = () => {
                   {c.imageUrls.map((url, i) => (
                     <img
                       key={i}
-                      src={`${API_BASE}${url}`}
+                      src={`${API_URL}${url}`} // ✅ updated
                       alt={`complaint-${i}`}
                       className="w-16 h-16 object-cover rounded-md border"
                     />
@@ -287,7 +286,7 @@ const Track = () => {
                 {selectedComplaint.imageUrls.map((url, i) => (
                   <img
                     key={i}
-                    src={`${API_BASE}${url}`}
+                    src={`${API_URL}${url}`} // ✅ updated
                     alt={`complaint-${i}`}
                     className="w-24 h-24 object-cover rounded-md border"
                   />
