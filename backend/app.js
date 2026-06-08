@@ -12,7 +12,15 @@ import complaintsRouter from "./routes/complaints.js";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "https://fixmycity-1-5wbk.onrender.com",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/uploads", express.static(uploadDir));
 
