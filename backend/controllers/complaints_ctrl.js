@@ -74,6 +74,8 @@ export async function getPublicComplaintByCode(req, res, next) {
       .lean();
 
     if (!complaint) return res.status(404).json({ error: "Complaint not found" });
+    console.log("Found complaint:", complaint);
+console.log("Mongo DB:", mongoose.connection.name);
 
     return res.json({
       complaint: {
