@@ -58,6 +58,7 @@ export async function getPublicSummary(req, res, next) {
 export async function getPublicComplaintByCode(req, res, next) {
   try {
     const code = (req.params.code || "").trim();
+    console.log("Searching complaint:", code);
 
     const orQuery = [
       { ticket: code },
