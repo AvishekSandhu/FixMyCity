@@ -9,7 +9,7 @@ import {
   assignOfficerToComplaint,
   updateComplaintDetails,
   deleteComplaint,
-} from '../contollers/admin_ctrl.js';
+} from '../controllers/admin_ctrl.js';
 import { requireAuth } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/role.middleware.js';
 

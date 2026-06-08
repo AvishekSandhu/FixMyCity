@@ -1,6 +1,6 @@
 // backend/src/routes/officer.routes.js
 import { Router } from 'express';
-import { getOfficerComplaints } from '../contollers/officer_ctrl.js';
+import { getOfficerComplaints } from '../controllers/officer_ctrl.js';
 import { requireAuth } from '../middleware/auth.js';
 import { requireOfficerOrAdmin } from '../middleware/role.middleware.js';
 

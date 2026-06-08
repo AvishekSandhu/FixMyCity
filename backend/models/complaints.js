@@ -35,7 +35,6 @@ const complaintSchema = new mongoose.Schema(
     phone: String,
     imageUrls: [String],
 
-    // workflow fields
     status: {
       type: String,
       enum: ["pending", "in_progress", "closed"],
@@ -53,5 +52,4 @@ const complaintSchema = new mongoose.Schema(
 );
 
 const Complaint = mongoose.model("Complaint", complaintSchema);
-
 export default Complaint;

@@ -5,6 +5,12 @@ import Home from "./pages/Home.jsx";
 import Navbar from "./pages/navbar.jsx";
 import Complaint from "./pages/Complait_reg.jsx";
 import Track from "./pages/track_com.jsx";
+// src/App.jsx (or wherever your routes are defined)
+
+import PublicTrack from "./pages/public_track.jsx";
+import PublicMap from "./pages/publicMap.jsx";
+
+
 import {
   SignIn,
   SignUp,
@@ -88,6 +94,8 @@ function App() {
         {/* Citizen pages */}
         <Route path="/creg" element={<Complaint />} />
         <Route path="/Track" element={<Track />} />
+        <Route path="/t/:ticket" element={<PublicTrack />} />
+<Route path="/explore" element={<PublicMap />} />
       </Routes>
     </>
   );

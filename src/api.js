@@ -1,14 +1,19 @@
 // src/api.js
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+export const API_URL = (() => {
+  // Vite or CRA env
+  const vite = typeof import.meta !== "undefined" ? import.meta.env?.VITE_API_URL : undefined;
+  const cra = typeof process !== "undefined" ? process.env?.REACT_APP_API_URL : undefined;
+  const env = vite || cra;
 
-// Optional helper for requests
-export async function apiFetch(path, options = {}) {
-  const res = await fetch(`${API_URL}${path}`, options);
+  if (env && /^https?:\/\//i.test(env)) return env.replace(/\/$/, "");
 
-  if (!res.ok) {
-    const errJson = await res.json().catch(() => ({}));
-    throw new Error(errJson.error || `Request failed: ${res.status}`);
+  if (typeof window !== "undefined") {
+    const { hostname, origin } = window.location;
+    // Local dev (CRA 3000, Vite 5173)
+    if (hostname === "localhost" || hostname === "127.0.0.1") return "http://localhost:3001";
+    // Same-origin fallback (if reverse proxy)
+    return origin.replace(/\/$/, "");
   }
 
-  return res;
-}
+  return "http://localhost:3001";
+})();

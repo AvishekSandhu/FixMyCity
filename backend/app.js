@@ -1,37 +1,33 @@
 // backend/app.js
-import express from 'express';
-import cors from 'cors';
-import routes from './routes/index.js';
-import { ClerkExpressWithAuth } from './config/clerk.js';
-import { uploadDir } from './config/multer.config.js';
-import { errorHandler } from './middleware/error.js';
+import express from "express";
+import cors from "cors";
+import routes from "./routes/index.js";
+import { ClerkExpressWithAuth } from "./config/clerk.js";
+import { uploadDir } from "./config/multer.config.js";
+import { errorHandler } from "./middleware/error.js";
+
+import publicRoutes from "./routes/public.r.js";
+import notificationsRouter from "./routes/notification.js";
+import complaintsRouter from "./routes/complaints.js";
 
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:5173',                   // Vite dev
-  'https://fixmycity-1-5wbk.onrender.com',  // Render frontend
-];
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
-
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
+app.use("/uploads", express.static(uploadDir));
 
-// serve uploaded files
-app.use('/uploads', express.static(uploadDir));
 
-// Clerk middleware → sets req.auth
+
 app.use(ClerkExpressWithAuth());
 
-// all API routes under /api
-app.use('/api', routes);
+app.use("/api", routes);
 
-// global error handler
+app.use("/api", notificationsRouter);
+
+app.use("/api/public", publicRoutes);
+// ✅ FIXED mount (your protected complaints routes)
+app.use('/api/complaints', complaintsRouter);
+
 app.use(errorHandler);
 
 export default app;

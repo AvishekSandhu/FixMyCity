@@ -3,7 +3,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
 import Spinner from "./loding.jsx";
-import { API_URL } from "../api"; // ✅ use shared base URL
+import { FaClipboardList, FaCheckCircle, FaClock, FaTimes } from "react-icons/fa";
+import { API_URL } from "../api";
+
+const getCode = (c) => c?.ticket || c?.complaintNumber || c?.publicToken || c?._id || "-";
 
 const OfficerDashboard = () => {
   const { isLoaded, isSignedIn, getToken } = useAuth();
@@ -11,9 +14,9 @@ const OfficerDashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [error, setError] = useState("");
 
-  const [statusFilter, setStatusFilter] = useState("all"); // all | pending | in_progress | closed
+  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedComplaint, setSelectedComplaint] = useState(null);
-  const [replyTexts, setReplyTexts] = useState({}); // { complaintId: text }
+  const [replyTexts, setReplyTexts] = useState({});
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -26,12 +29,9 @@ const OfficerDashboard = () => {
     const fetchComplaints = async () => {
       try {
         const token = await getToken();
-        const res = await fetch(
-          `${API_URL}/api/officer/complaints?status=all`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch(`${API_URL}/api/officer/complaints?status=all`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.error || "Failed to load complaints");
@@ -78,7 +78,6 @@ const OfficerDashboard = () => {
       }
       const data = await res.json();
       toast.success("Status updated");
-
       setComplaints((prev) =>
         prev.map((c) => (c._id === id ? data.complaint : c))
       );
@@ -103,17 +102,14 @@ const OfficerDashboard = () => {
 
     try {
       const token = await getToken();
-      const res = await fetch(
-        `${API_URL}/api/complaints/${complaintId}/replies`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ message }),
-        }
-      );
+      const res = await fetch(`${API_URL}/api/complaints/${complaintId}/replies`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ message }),
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to send reply");
@@ -135,9 +131,14 @@ const OfficerDashboard = () => {
 
   const openDetails = (complaint) => setSelectedComplaint(complaint);
 
+  const cardClass = "bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg flex items-center gap-4";
+  const selectClass = "bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-sky-500";
+  const th = "px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-slate-900 border-b border-slate-800 whitespace-nowrap";
+  const td = "px-4 py-3 text-sm text-slate-300 border-b border-slate-800 whitespace-nowrap";
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-slate-950">
         <Spinner />
       </div>
     );
@@ -145,242 +146,254 @@ const OfficerDashboard = () => {
 
   if (!isSignedIn) {
     return (
-      <p className="text-center mt-10 text-red-600 font-medium">
-        {error || "Please sign in as an officer to view this page."}
-      </p>
+      <div className="flex items-center justify-center h-screen bg-slate-950">
+        <p className="text-red-400 font-medium border border-red-900 bg-red-900/20 px-6 py-4 rounded-lg">
+          {error || "Please sign in as an officer to view this page."}
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-3xl font-bold mb-4">Officer Dashboard</h1>
-
-      {error && <p className="text-red-600 mb-4">Error: {error}</p>}
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border rounded-lg p-4 shadow-sm">
-          <p className="text-gray-500 text-sm">Pending</p>
-          <p className="text-2xl font-semibold">{counts.pending}</p>
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-6">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            Officer Dashboard
+          </h1>
+          <span className="text-slate-500 text-sm">Manage your assigned complaints</span>
         </div>
-        <div className="bg-white border rounded-lg p-4 shadow-sm">
-          <p className="text-gray-500 text-sm">In Progress</p>
-          <p className="text-2xl font-semibold">{counts.in_progress}</p>
-        </div>
-        <div className="bg-white border rounded-lg p-4 shadow-sm">
-          <p className="text-gray-500 text-sm">Closed</p>
-          <p className="text-2xl font-semibold">{counts.closed}</p>
-        </div>
-      </div>
 
-      {/* Complaints list */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl font-semibold">Assigned Complaints</h2>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-700">Filter by status:</span>
-            <select
-              className="border rounded px-2 py-1"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="closed">Closed</option>
-            </select>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className={cardClass}>
+            <div className="p-3 bg-amber-900/30 rounded-full text-amber-500"><FaClock size={24} /></div>
+            <div><p className="text-slate-400 text-sm">Pending</p><p className="text-2xl font-bold text-white">{counts.pending}</p></div>
+          </div>
+          <div className={cardClass}>
+            <div className="p-3 bg-blue-900/30 rounded-full text-blue-500"><FaClipboardList size={24} /></div>
+            <div><p className="text-slate-400 text-sm">In Progress</p><p className="text-2xl font-bold text-white">{counts.in_progress}</p></div>
+          </div>
+          <div className={cardClass}>
+            <div className="p-3 bg-emerald-900/30 rounded-full text-emerald-500"><FaCheckCircle size={24} /></div>
+            <div><p className="text-slate-400 text-sm">Closed</p><p className="text-2xl font-bold text-white">{counts.closed}</p></div>
           </div>
         </div>
 
-        {filteredComplaints.length === 0 ? (
-          <p className="text-gray-600 text-sm">No complaints assigned.</p>
-        ) : (
-          <table className="min-w-full border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-2 py-1 text-left">Title</th>
-                <th className="border px-2 py-1 text-left">Citizen</th>
-                <th className="border px-2 py-1 text-left">Type</th>
-                <th className="border px-2 py-1 text-left">Department</th>
-                <th className="border px-2 py-1 text-left">Status</th>
-                <th className="border px-2 py-1 text-left">Created At</th>
-                <th className="border px-2 py-1">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredComplaints.map((c) => (
-                <tr key={c._id}>
-                  <td className="border px-2 py-1">{c.title}</td>
-                  <td className="border px-2 py-1">{c.name || "-"}</td>
-                  <td className="border px-2 py-1">{c.complaintType}</td>
-                  <td className="border px-2 py-1">{c.department || "-"}</td>
-                  <td className="border px-2 py-1 capitalize">{c.status}</td>
-                  <td className="border px-2 py-1">
-                    {new Date(c.createdAt).toLocaleString()}
-                  </td>
-                  <td className="border px-2 py-1 space-y-1">
-                    <select
-                      className="border rounded px-1 py-0.5 text-xs w-full mb-1"
-                      value={c.status}
-                      onChange={(e) => updateStatus(c._id, e.target.value)}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="in_progress">In Progress</option>
-                      <option value="closed">Closed</option>
-                    </select>
-                    <button
-                      onClick={() => openDetails(c)}
-                      className="w-full px-1 py-0.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      View & Respond
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Details panel */}
-      {selectedComplaint && (
-        <div className="mt-6 bg-white border rounded-lg shadow-sm p-4">
-          <div className="flex justify-between items-start mb-2">
-            <h2 className="text-xl font-semibold">
-              {selectedComplaint.title}
-            </h2>
-            <button
-              onClick={() => setSelectedComplaint(null)}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              Close
-            </button>
+        {/* Complaints table */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 p-4 rounded-t-xl border-b border-slate-800">
+            <h2 className="text-xl font-semibold text-white">Assigned Complaints</h2>
+            <div className="flex items-center gap-3">
+              <span className="text-slate-400 text-sm hidden sm:inline">Status:</span>
+              <select className={`${selectClass} py-2`} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
           </div>
 
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Citizen:</span>{" "}
-            {selectedComplaint.name || "-"}{" "}
-            {selectedComplaint.phone ? `(${selectedComplaint.phone})` : ""}
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Address:</span>{" "}
-            {selectedComplaint.address}
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Type:</span>{" "}
-            {selectedComplaint.complaintType}
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Department:</span>{" "}
-            {selectedComplaint.department || "-"}
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Date of Problem:</span>{" "}
-            {selectedComplaint.dateOfProblem
-              ? new Date(
-                  selectedComplaint.dateOfProblem
-                ).toLocaleDateString()
-              : "N/A"}
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Status:</span>{" "}
-            <span className="capitalize">{selectedComplaint.status}</span>
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            <span className="font-medium">Handling Officer:</span>{" "}
-            {selectedComplaint.assignedOfficerName || "-"}{" "}
-            {selectedComplaint.assignedOfficerEmail
-              ? `(${selectedComplaint.assignedOfficerEmail})`
-              : ""}
-          </p>
-
-          <p className="text-sm text-gray-700 mt-2">
-            <span className="font-medium">Description:</span>{" "}
-            {selectedComplaint.description}
-          </p>
-          {selectedComplaint.additionalInfo && (
-            <p className="text-sm text-gray-700 mt-1">
-              <span className="font-medium">Additional Info:</span>{" "}
-              {selectedComplaint.additionalInfo}
-            </p>
-          )}
-
-          {/* Images */}
-          {selectedComplaint.imageUrls &&
-            selectedComplaint.imageUrls.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {selectedComplaint.imageUrls.map((url, i) => (
-                  <img
-                    key={i}
-                    src={`${API_URL}${url}`} // ✅ updated
-                    alt={`complaint-${i}`}
-                    className="w-24 h-24 object-cover rounded-md border"
-                  />
-                ))}
-              </div>
-            )}
-
-          {/* Replies */}
-          <div className="mt-4">
-            <h3 className="text-md font-semibold mb-2">Conversation</h3>
-            {(!selectedComplaint.replies ||
-              selectedComplaint.replies.length === 0) && (
-              <p className="text-sm text-gray-500">No replies yet.</p>
-            )}
-            {selectedComplaint.replies &&
-              selectedComplaint.replies.length > 0 && (
-                <div className="space-y-1 max-h-48 overflow-y-auto">
-                  {selectedComplaint.replies
-                    .slice()
-                    .sort(
-                      (a, b) =>
-                        new Date(a.createdAt) - new Date(b.createdAt)
-                    )
-                    .map((r, idx) => (
-                      <div
-                        key={idx}
-                        className="text-sm bg-gray-50 border border-gray-200 rounded px-2 py-1"
-                      >
-                        <div className="flex justify-between">
-                          <span className="font-medium capitalize">
-                            {r.senderRole}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {r.createdAt
-                              ? new Date(
-                                  r.createdAt
-                                ).toLocaleString()
-                              : ""}
-                          </span>
-                        </div>
-                        <p className="text-gray-700">{r.message}</p>
-                      </div>
-                    ))}
-                </div>
+          <div className="bg-slate-900 rounded-b-xl border border-slate-800 overflow-hidden">
+            <div className="overflow-x-auto">
+              {filteredComplaints.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">No complaints assigned matching criteria.</div>
+              ) : (
+                <table className="min-w-full divide-y divide-slate-800">
+                  <thead>
+                    <tr>
+                      <th className={th}>Complaint #</th>
+                      <th className={th}>Title</th>
+                      <th className={th}>Citizen</th>
+                      <th className={th}>Type</th>
+                      <th className={th}>Department</th>
+                      <th className={th}>Status</th>
+                      <th className={th}>Created At</th>
+                      <th className={th}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {filteredComplaints.map((c) => {
+                      const code = getCode(c);
+                      return (
+                        <tr key={c._id} className="hover:bg-slate-800/50 transition-colors">
+                          <td className={td}>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-xs">{code}</span>
+                              {code !== "-" && (
+                                <button
+                                  onClick={() => navigator.clipboard.writeText(code)}
+                                  className="text-[10px] text-sky-400 hover:text-sky-300 underline"
+                                >
+                                  Copy
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                          <td className={td}>
+                            <div className="font-medium text-white truncate max-w-[180px]" title={c.title}>
+                              {c.title}
+                            </div>
+                          </td>
+                          <td className={td}>{c.name || "Anonymous"}</td>
+                          <td className={td}>
+                            <span className="px-2 py-1 rounded text-xs bg-slate-800 text-slate-300 border border-slate-700">
+                              {c.complaintType}
+                            </span>
+                          </td>
+                          <td className={td}>{c.department || "-"}</td>
+                          <td className={td}>
+                            <span
+                              className={`px-2 py-0.5 rounded text-xs font-semibold border capitalize ${
+                                c.status === "closed"
+                                  ? "bg-emerald-900/20 text-emerald-400 border-emerald-800"
+                                  : c.status === "in_progress"
+                                  ? "bg-amber-900/20 text-amber-400 border-amber-800"
+                                  : "bg-red-900/20 text-red-400 border-red-800"
+                              }`}
+                            >
+                              {c.status.replace("_", " ")}
+                            </span>
+                          </td>
+                          <td className={td}>{new Date(c.createdAt).toLocaleDateString()}</td>
+                          <td className={td}>
+                            <div className="flex flex-col gap-2 min-w-[140px]">
+                              <select
+                                className={`${selectClass} w-full`}
+                                value={c.status}
+                                onChange={(e) => updateStatus(c._id, e.target.value)}
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="closed">Closed</option>
+                              </select>
+                              <button
+                                onClick={() => openDetails(c)}
+                                className="px-2 py-1 text-xs bg-sky-600 text-white rounded hover:bg-sky-500 transition-colors"
+                              >
+                                View & Respond
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               )}
-          </div>
-
-          {/* Reply box */}
-          <div className="mt-4">
-            <h3 className="text-md font-semibold mb-1">Reply to citizen</h3>
-            <textarea
-              rows={3}
-              className="w-full border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Write your response..."
-              value={replyTexts[selectedComplaint._id] || ""}
-              onChange={(e) =>
-                handleReplyChange(selectedComplaint._id, e.target.value)
-              }
-            />
-            <button
-              onClick={() => handleReplySubmit(selectedComplaint._id)}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700"
-            >
-              Send Reply
-            </button>
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Modal */}
+        {selectedComplaint && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 z-10 flex justify-between items-center p-4 border-b border-slate-800 bg-slate-900">
+                <div>
+                  <h2 className="text-lg font-bold text-white truncate pr-4">{selectedComplaint.title}</h2>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    Complaint #: <span className="font-mono text-sky-400">{getCode(selectedComplaint)}</span>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(getCode(selectedComplaint))}
+                      className="text-[10px] text-sky-400 hover:text-sky-300 underline"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedComplaint(null)} className="text-slate-400 hover:text-white">
+                  <FaTimes size={20} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div><span className="text-slate-500 block">Citizen:</span> <span className="text-slate-200">{selectedComplaint.name || "Anonymous"}</span></div>
+                  <div><span className="text-slate-500 block">Phone:</span> <span className="text-slate-200">{selectedComplaint.phone || "N/A"}</span></div>
+                  <div><span className="text-slate-500 block">Address:</span> <span className="text-slate-200">{selectedComplaint.address}</span></div>
+                  <div><span className="text-slate-500 block">Type:</span> <span className="text-slate-200">{selectedComplaint.complaintType}</span></div>
+                  <div><span className="text-slate-500 block">Date of Problem:</span> <span className="text-slate-200">{selectedComplaint.dateOfProblem ? new Date(selectedComplaint.dateOfProblem).toLocaleDateString() : "N/A"}</span></div>
+                  <div><span className="text-slate-500 block">Status:</span> <span className="text-sky-400 font-semibold capitalize">{selectedComplaint.status.replace("_"," ")}</span></div>
+                </div>
+
+                <div className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                  <span className="text-slate-500 block text-xs uppercase tracking-wider mb-1">Description</span>
+                  <p className="text-slate-300 text-sm leading-relaxed">{selectedComplaint.description}</p>
+                  {selectedComplaint.additionalInfo && (
+                    <p className="text-slate-400 text-xs mt-2 pt-2 border-t border-slate-800">Note: {selectedComplaint.additionalInfo}</p>
+                  )}
+                </div>
+
+                {selectedComplaint.imageUrls?.length > 0 && (
+                  <div>
+                    <span className="text-slate-500 text-xs uppercase tracking-wider block mb-2">Attachments</span>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedComplaint.imageUrls.map((url, i) => (
+                        <a key={i} href={`${API_URL}${url}`} target="_blank" rel="noreferrer">
+                          <img
+                            src={`${API_URL}${url}`}
+                            alt={`evidence-${i}`}
+                            className="w-20 h-20 object-cover rounded-lg border border-slate-700 hover:border-sky-500 transition-colors"
+                          />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Conversation */}
+                <div className="border-t border-slate-800 pt-4">
+                  <h3 className="text-md font-semibold text-white mb-3">Conversation</h3>
+                  <div className="space-y-3 mb-4 max-h-48 overflow-y-auto pr-2">
+                    {(!selectedComplaint.replies || selectedComplaint.replies.length === 0) ? (
+                      <p className="text-sm text-slate-600 italic">No messages yet.</p>
+                    ) : (
+                      selectedComplaint.replies.map((r, idx) => (
+                        <div key={idx} className={`text-sm p-3 rounded-lg border ${
+                          r.senderRole === "officer"
+                            ? "bg-sky-900/20 border-sky-800/50 ml-8"
+                            : "bg-slate-800 border-slate-700 mr-8"
+                        }`}>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className={`text-xs font-bold uppercase ${
+                              r.senderRole === "officer" ? "text-sky-400" : "text-slate-400"
+                            }`}>
+                              {r.senderRole}
+                            </span>
+                            <span className="text-[10px] text-slate-600">
+                              {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
+                            </span>
+                          </div>
+                          <p className="text-slate-300">{r.message}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      rows={3}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                      placeholder="Write a reply to the citizen..."
+                      value={replyTexts[selectedComplaint._id] || ""}
+                      onChange={(e) => setReplyTexts((p) => ({ ...p, [selectedComplaint._id]: e.target.value }))}
+                    />
+                    <button
+                      onClick={() => handleReplySubmit(selectedComplaint._id)}
+                      className="self-end px-4 py-2 bg-sky-600 text-white text-sm font-semibold rounded-lg hover:bg-sky-500 transition-colors"
+                    >
+                      Send Reply
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 };
