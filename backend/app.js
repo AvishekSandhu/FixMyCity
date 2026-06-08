@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://fixmycity-qi5p.onrender.com",
+      "https://fixmycity-1-5wbk.onrender.com",
       "http://localhost:5174",
     ],
     credentials: true,
