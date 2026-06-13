@@ -161,7 +161,7 @@ export default function PublicTrack() {
     setError("");
     setSearched(false);
     setInputId("");
-    navigate("/t/", { replace: true });
+    navigate("/track", { replace: true });
     setTimeout(() => inputRef.current?.focus(), 50);
   }
 

@@ -672,7 +672,7 @@ const Track = () => {
                            pl-9 pr-4 py-2.5 text-sm font-mono tracking-wide
                            placeholder-slate-600 text-slate-100
                            focus:outline-none focus:border-sky-500 transition-colors"
-                placeholder="e.g. FCMC-2025-000123"
+                placeholder="e.g. 6a270fefae76031652ac47c667"
               />
             </div>
             <button

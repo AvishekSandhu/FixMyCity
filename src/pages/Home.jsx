@@ -10,6 +10,7 @@ import {
 import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 
+
 const slides = [
   { src: "/img1.jpg", alt: "Slide 1" },
   { src: "/img2.jpg", alt: "Slide 2" },
@@ -19,7 +20,9 @@ const slides = [
 ];
 
 const SLIDE_INTERVAL = 5000; // 5 seconds
-const API_BASE = "https://fixmycity-qi5p.onrender.com";
+
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -334,7 +337,7 @@ const Home = () => {
                 </p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {recentComplaints.map((c) => (
+                  {recentComplaints.slice(0, 6).map((c) => (
                     <div
                       key={c._id}
                       className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:bg-slate-800 transition-colors group"
