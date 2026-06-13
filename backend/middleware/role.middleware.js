@@ -23,7 +23,7 @@ export async function requireOfficerOrAdmin(req, res, next) {
         .json({ error: 'Forbidden: officers/admins only' });
     }
     req.userRole = role;
-    next(err);
+    next(); // ✅ just next(), no argument
   } catch (err) {
     next(err);
   }
