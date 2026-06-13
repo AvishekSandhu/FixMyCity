@@ -59,7 +59,7 @@ const Home = () => {
           throw new Error(err.error || "Failed to load statistics");
         }
         const data = await res.json();
-        comsole.log("Fetched stats:", data);
+
         setStats(data.counts || { pending: 0, closed: 0, total: 0 });
         setRecentComplaints(data.recentComplaints || []);
       } catch (err) {
