@@ -19,7 +19,7 @@ const slides = [
 ];
 
 const SLIDE_INTERVAL = 5000; // 5 seconds
-const API_BASE = "http://localhost:3001";
+const API_BASE = "https://fixmycity-1-5wbk.onrender.com";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,6 +59,7 @@ const Home = () => {
           throw new Error(err.error || "Failed to load statistics");
         }
         const data = await res.json();
+        comsole.log("Fetched stats:", data);
         setStats(data.counts || { pending: 0, closed: 0, total: 0 });
         setRecentComplaints(data.recentComplaints || []);
       } catch (err) {
