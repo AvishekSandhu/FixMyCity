@@ -19,7 +19,7 @@ const slides = [
 ];
 
 const SLIDE_INTERVAL = 5000; // 5 seconds
-const API_BASE = "https://fixmycity-1-5wbk.onrender.com";
+const API_BASE = "https://fixmycity-qi5p.onrender.com";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
