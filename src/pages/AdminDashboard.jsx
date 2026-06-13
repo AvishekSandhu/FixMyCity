@@ -87,30 +87,30 @@ const AdminDashboard = () => {
     return users.filter((u) => u.role === userRoleFilter);
   }, [users, userRoleFilter]);
 
-  const updateStatus = async (id, status) => {
-    try {
-      const token = await getToken();
-      const res = await fetch(`${API_URL}/api/complaints/${id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to update status");
-      }
-      const data = await res.json();
-      toast.success("Status updated");
-      setComplaints((prev) =>
-        prev.map((c) => (c._id === id ? data.complaint : c))
-      );
-    } catch (err) {
-      toast.error(err.message || "Error updating status");
+ const updateStatus = async (id, status) => {
+  try {
+    const token = await getToken();
+    const res = await fetch(`${API_URL}/api/complaints/${id}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to update status");
     }
-  };
+    const data = await res.json();
+    toast.success("Status updated");
+    setComplaints((prev) =>
+      prev.map((c) => (c._id === id ? data.complaint : c))
+    );
+  } catch (err) {
+    toast.error(err.message || "Error updating status");
+  }
+};
 
   const changeUserRole = async (userId, newRole) => {
     try {
